@@ -23,4 +23,4 @@ COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "NET Core Web API HiringTest.dll"]
 # Add this line in your final stage
 RUN mkdir -p /app/keys && chmod 777 /app/keys
-VOLUME /app/keys
+
