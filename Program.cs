@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -21,6 +22,9 @@ builder.Services.AddScoped<AuthService>();
 
 // Add Controllers
 builder.Services.AddControllers();
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo("/app/keys"))
+    .SetApplicationName("HiringTestApi");
 
 // Add Swagger with JWT support
 builder.Services.AddEndpointsApiExplorer();
@@ -73,22 +77,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 builder.Services.AddAuthorization();
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(80);
-});
 
 
 
 
 var app = builder.Build();
 
-// Enable Swagger UI only in Development
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+
 
 
 app.UseHttpsRedirection();
@@ -98,4 +96,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+app.Run("http://0.0.0.0:5001");
+
